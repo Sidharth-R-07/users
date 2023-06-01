@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:users/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         )
       ],
       child: MaterialApp(
+        builder: FToastBuilder(),
         title: 'Users',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

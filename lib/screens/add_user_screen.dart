@@ -1,8 +1,13 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:users/models/user_model.dart';
+import 'package:users/providers/user_provider.dart';
 import 'package:users/utils/fonts.dart';
+import 'package:users/utils/methods.dart';
 import 'package:users/widgets/input_field.dart';
+import 'package:users/widgets/loader.dart';
 import 'package:users/widgets/save_button.dart';
 import 'package:users/widgets/show_input_error.dart';
 
@@ -21,7 +26,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   String nameValidationText = '';
   String emailValidationText = '';
   String ageValidationText = '';
-
+  bool isLoading = false;
   @override
   void dispose() {
     super.dispose();
@@ -34,6 +39,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -88,7 +94,15 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   SizedBox(
                     height: size.height * 0.07,
                   ),
-                  SaveButton(title: 'save', onTap: _submitFn),
+                  SaveButton(
+                    onTap: () => _submitFn(userProvider),
+                    child: isLoading
+                        ? const Loader()
+                        : Text(
+                            'save',
+                            style: FontsProvider.whiteMediumText,
+                          ),
+                  ),
                   SizedBox(
                     height: size.height * 0.10,
                   ),
@@ -169,7 +183,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     }
   }
 
-  void _submitFn() {
+  void _submitFn(UserProvider userProvider) async {
     nameValidation(nameController.text.trim());
     emailValidation(emailController.text.trim());
     ageValidation(ageController.text.trim());
@@ -178,9 +192,29 @@ class _AddUserScreenState extends State<AddUserScreen> {
         emailValidationText.isEmpty &&
         ageValidationText.isEmpty) {
       //Then Save User
+      setState(() {
+        isLoading = true;
+      });
+      final name = nameController.text.trim();
+      final email = emailController.text.trim();
+      final age = ageController.text.trim();
+
+      final newUser = UserModel(name: name, email: email, age: int.parse(age));
+
+      await userProvider.saveUserToFirestore(user: newUser);
+      setState(() {
+        isLoading = false;
+      });
+      //clear all textfield text
+
+      nameController.clear();
+      emailController.clear();
+      ageController.clear();
+      showToast('User saved successfully');
 
       log('User DATA Saved');
     } else {
+      //Form is not valid
       log('FORM IS NOT VALID');
     }
   }
