@@ -26,13 +26,16 @@ class UserProvider with ChangeNotifier {
 
   Future<void> getAllUsers() async {
     try {
-      final ref = firestore.collection('users');
+      final ref = firestore.collection('users').orderBy('createAt').limit(12);
 
       final fetedData = await ref.get();
 
       final fetchedList = fetedData.docs
           .map<UserModel>((data) => UserModel(
-              name: data['name'], email: data['email'], age: data['age']))
+              name: data['name'],
+              email: data['email'],
+              age: data['age'],
+              createAt: data['createAt']))
           .toList();
 
       usersList = fetchedList;

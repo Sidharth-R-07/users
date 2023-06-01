@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:users/models/user_model.dart';
 import 'package:users/utils/colors.dart';

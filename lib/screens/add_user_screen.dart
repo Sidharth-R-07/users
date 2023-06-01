@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:users/models/user_model.dart';
@@ -204,7 +205,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
       final email = emailController.text.trim();
       final age = ageController.text.trim();
 
-      final newUser = UserModel(name: name, email: email, age: int.parse(age));
+      final newUser = UserModel(
+          name: name,
+          email: email,
+          age: int.parse(age),
+          createAt: Timestamp.now());
 
       await userProvider.saveUserToFirestore(user: newUser);
       setState(() {
