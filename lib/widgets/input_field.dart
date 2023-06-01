@@ -7,16 +7,19 @@ class InputField extends StatelessWidget {
   final String hint;
   final TextInputAction textInputAction;
   final TextInputType keyBoard;
-  const InputField(
-      {super.key,
-      required this.controller,
-      required this.hint,
-      required this.keyBoard,
-      required this.textInputAction});
+
+  const InputField({
+    super.key,
+    required this.controller,
+    required this.hint,
+    required this.keyBoard,
+    required this.textInputAction,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(horizontal: 8),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),

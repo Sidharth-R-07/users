@@ -11,6 +11,8 @@ class FontsProvider {
 
   static TextStyle hintText =
       GoogleFonts.mukta(fontSize: 18, color: Colors.grey);
+  static TextStyle errorText =
+      GoogleFonts.mukta(fontSize: 14, color: Colors.red);
   static TextStyle whiteMediumText =
       GoogleFonts.mukta(fontSize: 24, color: bgScaffold);
 }
