@@ -16,54 +16,78 @@ class _AddUserScreenState extends State<AddUserScreen> {
   final TextEditingController ageController = TextEditingController();
 
   @override
+  void dispose() {
+    super.dispose();
+
+    nameController.dispose();
+    emailController.dispose();
+    ageController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: size.height * 0.08,
-              ),
-              Text(
-                'Hello!\nWelcome back',
-                style: FontsProvider.titleLarge,
-              ),
-              SizedBox(
-                height: size.height * 0.08,
-              ),
-              InputField(
+      resizeToAvoidBottomInset: false,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: size.height * 0.08,
+                ),
+                Text(
+                  'Hello!\nWelcome back',
+                  style: FontsProvider.titleLarge,
+                ),
+                SizedBox(
+                  height: size.height * 0.08,
+                ),
+                InputField(
                   controller: nameController,
                   hint: 'name',
-                  keyBoard: TextInputType.name),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              InputField(
+                  keyBoard: TextInputType.name,
+                  textInputAction: TextInputAction.next,
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+                InputField(
                   controller: emailController,
                   hint: 'email',
-                  keyBoard: TextInputType.emailAddress),
-              SizedBox(
-                height: size.height * 0.03,
-              ),
-              InputField(
+                  keyBoard: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                ),
+                SizedBox(
+                  height: size.height * 0.03,
+                ),
+                InputField(
                   controller: ageController,
                   hint: 'age',
-                  keyBoard: TextInputType.number),
-              SizedBox(
-                height: size.height * 0.08,
-              ),
-              SaveButton(title: 'save', onTap: () {}),
-              SizedBox(
-                height: size.height * 0.10,
-              ),
-              Center(
+                  keyBoard: TextInputType.number,
+                  textInputAction: TextInputAction.done,
+                ),
+                SizedBox(
+                  height: size.height * 0.08,
+                ),
+                SaveButton(title: 'save', onTap: () {}),
+                SizedBox(
+                  height: size.height * 0.10,
+                ),
+                Center(
                   child: TextButton(
-                      onPressed: () {}, child: const Text('View all users')))
-            ],
+                    onPressed: () {},
+                    child: const Text('View all users'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
