@@ -30,11 +30,12 @@ class MyApp extends StatelessWidget {
         title: 'Users',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-          scaffoldBackgroundColor: bgScaffold,
-          primaryColor: primaryColor,
-          useMaterial3: true,
-        ),
+            colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
+            scaffoldBackgroundColor: bgScaffold,
+            primaryColor: primaryColor,
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(
+                iconTheme: IconThemeData(color: primaryColor))),
         home: const AddUserScreen(),
       ),
     );

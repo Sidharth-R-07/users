@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:users/models/user_model.dart';
 import 'package:users/providers/user_provider.dart';
+import 'package:users/screens/users_screen.dart';
 import 'package:users/utils/fonts.dart';
 import 'package:users/utils/methods.dart';
 import 'package:users/widgets/input_field.dart';
@@ -108,7 +109,11 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   ),
                   Center(
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const UsersScreen(),
+                        ));
+                      },
                       child: const Text('View all users'),
                     ),
                   ),

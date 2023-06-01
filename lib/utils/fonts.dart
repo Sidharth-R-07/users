@@ -9,6 +9,9 @@ class FontsProvider {
   static TextStyle titleMedium = GoogleFonts.playfairDisplay(
       color: primaryColor, fontSize: 26, fontWeight: FontWeight.bold);
 
+  static TextStyle headingMedium = GoogleFonts.mukta(
+      color: primaryColor, fontSize: 22, fontWeight: FontWeight.bold);
+
   static TextStyle hintText =
       GoogleFonts.mukta(fontSize: 18, color: Colors.grey);
   static TextStyle errorText =
