@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
-import 'package:users/utils/methods.dart';
+import '../utils/methods.dart';
 import '../models/user_model.dart';
 
 class UserProvider with ChangeNotifier {
   List<UserModel> usersList = [];
   final firestore = FirebaseFirestore.instance;
+
+  ///STORE USER DATA TO FIRESTORE FUNCTION
   Future<void> saveUserToFirestore({required UserModel user}) async {
     try {
       final ref = firestore.collection('users');
@@ -23,6 +25,8 @@ class UserProvider with ChangeNotifier {
       showToast('Something went worng!try again');
     }
   }
+
+  ///GET ALL USER FUNCTIOM
 
   Future<void> getAllUsers() async {
     try {

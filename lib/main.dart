@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:users/providers/user_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import '../screens/add_user_screen.dart';
 import '../utils/colors.dart';
+import '../providers/user_provider.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

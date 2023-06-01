@@ -3,6 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'colors.dart';
 
+
+///SHOWING TOAST FUNCTION
 void showToast(String text) {
   Fluttertoast.showToast(
       msg: text,

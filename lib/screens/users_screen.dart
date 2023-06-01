@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:users/models/user_model.dart';
-import 'package:users/utils/fonts.dart';
-import 'package:users/utils/methods.dart';
-import 'package:users/widgets/lazy_loading.dart';
+import '../models/user_model.dart';
+import '../utils/fonts.dart';
+import '../utils/methods.dart';
+import '../widgets/lazy_loading.dart';
 
 import '../widgets/user_card.dart';
 
@@ -18,23 +18,30 @@ class UsersScreen extends StatefulWidget {
 }
 
 class _UsersScreenState extends State<UsersScreen> {
-  int limit = 10;
+  ///SET FECTHING USERS COUNT
+  int limit = 15;
+
+  ///INTIAL LOADING FOR FETCH USERS FIRST TIME
   bool loadingUsers = false;
 
   List<UserModel> usersList = [];
   final firestore = FirebaseFirestore.instance;
+
+  ///LASTUSERS VARAIBLE FOR FINDING OUT LAST USERS IN LIST
   late UserModel lastUser;
 
+  ///CREATING SCROLL CONTROLLER FOR SCROLL CONTROLLER
   final _scrollController = ScrollController();
+
+  ///BOOL FOR GETTING MORE USERS
   bool _gettingMoreUsers = false;
+
+  ///BOOL FOR IS THERE MORE AVAILABLE USERS
   bool _moreUsersAvailable = true;
 
   bool loadMore = false;
 
-
-
-
-  
+  ///GETUSERS FUNCTION FOR FETCHING LIMITED USERS AND SHOWING TO LISTVIEW
   Future<void> _getUsers() async {
     try {
       setState(() {
@@ -70,6 +77,7 @@ class _UsersScreenState extends State<UsersScreen> {
     }
   }
 
+  ///GETMOREUSERS FUNCTION FOR FETCHING MORE LIMITED DATA AND ADD TO LIST
   _getMoreUsers() async {
     log('GET MORE FUNCTION CALLED');
 
@@ -111,7 +119,7 @@ class _UsersScreenState extends State<UsersScreen> {
     } on PlatformException catch (err) {
       showToast(err.message.toString());
     } catch (err) {
-      showToast(err.toString());
+      log('ERROR IN _getMoreUser FUNCTION:$err');
     } finally {
       setState(() {
         loadingUsers = false;
@@ -122,12 +130,13 @@ class _UsersScreenState extends State<UsersScreen> {
   @override
   void initState() {
     _getUsers();
+
+    ///LISTENING SCROLL POSITION
     _scrollController.addListener(() async {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
 
-      final delta = MediaQuery.of(context).size.height * 0.25;
-
+      ///IF SCROLLING POSITION IN END THEN SHOW LOADING AND GETMORE USERS
       if (maxScroll == currentScroll) {
         setState(() {
           loadMore = true;
@@ -157,16 +166,22 @@ class _UsersScreenState extends State<UsersScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'All users',
+            'all users',
             style: FontsProvider.headingMedium,
           ),
         ),
+
+        ///CHECKING IS FETCHING USERS OR NOT
         body: loadingUsers
             ? const LazyLoading()
+
+            ///CHECKING LIST IS EMPTY OR NOT
             : usersList.isEmpty
                 ? const Center(
                     child: Text('No User Found!'),
                   )
+
+                ///IF FIRESTORE HAS DATA THEN SHOWING A LISTVIEW
                 : Column(
                     children: [
                       Expanded(
@@ -179,6 +194,8 @@ class _UsersScreenState extends State<UsersScreen> {
                           },
                         ),
                       ),
+
+                      ///LOADING FOR FETCH MORE USERS
                       if (loadMore) const LazyLoading()
                     ],
                   ));

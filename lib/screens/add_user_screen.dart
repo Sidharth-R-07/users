@@ -3,15 +3,15 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:users/models/user_model.dart';
-import 'package:users/providers/user_provider.dart';
-import 'package:users/screens/users_screen.dart';
-import 'package:users/utils/fonts.dart';
-import 'package:users/utils/methods.dart';
-import 'package:users/widgets/input_field.dart';
-import 'package:users/widgets/loader.dart';
-import 'package:users/widgets/save_button.dart';
-import 'package:users/widgets/show_input_error.dart';
+import '../models/user_model.dart';
+import '../providers/user_provider.dart';
+import '../screens/users_screen.dart';
+import '../utils/fonts.dart';
+import '../utils/methods.dart';
+import '../widgets/input_field.dart';
+import '../widgets/loader.dart';
+import '../widgets/save_button.dart';
+import '../widgets/show_input_error.dart';
 
 class AddUserScreen extends StatefulWidget {
   const AddUserScreen({super.key});
@@ -21,10 +21,12 @@ class AddUserScreen extends StatefulWidget {
 }
 
 class _AddUserScreenState extends State<AddUserScreen> {
+  //CREATED CONTROLLER FOR INPUT FEILDS
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
+
+//THESE VARAIBLE FOR TEXTFORM FIELD VALIDATION
   String nameValidationText = '';
   String emailValidationText = '';
   String ageValidationText = '';
@@ -46,19 +48,21 @@ class _AddUserScreenState extends State<AddUserScreen> {
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () {
+          //WHEN CLICKED SCREEN AND UNFOCUS KEYBOARD
           FocusScope.of(context).unfocus();
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
           child: SingleChildScrollView(
             child: Form(
-              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
                     height: size.height * 0.08,
                   ),
+
+                  ///---------------------TITLE -----------------------------------------
                   Text(
                     'Hello!\nWelcome back',
                     style: FontsProvider.titleLarge,
@@ -66,6 +70,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   SizedBox(
                     height: size.height * 0.08,
                   ),
+
+                  ///--------------------TEXT INPUT FEILD SECTIONS------------------------
                   InputField(
                     controller: nameController,
                     hint: 'name',
@@ -96,6 +102,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   SizedBox(
                     height: size.height * 0.07,
                   ),
+
+                  ///--------------------ON SUBMIT BUTTON------------------------
                   SaveButton(
                     onTap: () => _submitFn(userProvider),
                     child: isLoading
@@ -105,9 +113,12 @@ class _AddUserScreenState extends State<AddUserScreen> {
                             style: FontsProvider.whiteMediumText,
                           ),
                   ),
+
                   SizedBox(
-                    height: size.height * 0.10,
+                    height: size.height * 0.08,
                   ),
+
+                  ///--------------------VIEW ALL USERS BUTTON----------------------
                   Center(
                     child: TextButton(
                       onPressed: () {
@@ -118,6 +129,9 @@ class _AddUserScreenState extends State<AddUserScreen> {
                       child: const Text('View all users'),
                     ),
                   ),
+                  SizedBox(
+                    height: size.height * 0.10,
+                  ),
                 ],
               ),
             ),
@@ -127,6 +141,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     );
   }
 
+//FUNCTION FOR VALIDATING NAME INPUT FEILD
   void nameValidation(String val) {
     if (val.isEmpty) {
       setState(() {
@@ -146,6 +161,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
       });
     }
   }
+//FUNCTION FOR VALIDATING AGE INPUT FEILD
 
   void ageValidation(String val) {
     if (val.isEmpty) {
@@ -166,6 +182,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
       });
     }
   }
+//FUNCTION FOR VALIDATING EMAIL INPUT FEILD
 
   void emailValidation(String val) {
     if (val.isEmpty) {
@@ -189,6 +206,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
     }
   }
 
+  ///SUBMIT FUNCTION FOR SUBMITING USER DATA AND STORE TO FIRESTORE
   void _submitFn(UserProvider userProvider) async {
     nameValidation(nameController.text.trim());
     emailValidation(emailController.text.trim());
@@ -201,6 +219,8 @@ class _AddUserScreenState extends State<AddUserScreen> {
       setState(() {
         isLoading = true;
       });
+      FocusScope.of(context).unfocus();
+
       final name = nameController.text.trim();
       final email = emailController.text.trim();
       final age = ageController.text.trim();
