@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:users/providers/user_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import '../screens/add_user_screen.dart';
 import '../utils/colors.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
