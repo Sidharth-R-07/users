@@ -5,7 +5,13 @@ import '../utils/fonts.dart';
 class InputField extends StatelessWidget {
   final TextEditingController controller;
   final String hint;
-  const InputField({super.key, required this.controller, required this.hint});
+
+  final TextInputType keyBoard;
+  const InputField(
+      {super.key,
+      required this.controller,
+      required this.hint,
+      required this.keyBoard});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +39,7 @@ class InputField extends StatelessWidget {
       ),
       child: TextFormField(
         controller: controller,
+        keyboardType: keyBoard,
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,

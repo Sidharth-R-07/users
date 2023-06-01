@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:users/utils/colors.dart';
 import 'package:users/utils/fonts.dart';
 import 'package:users/widgets/input_field.dart';
 import 'package:users/widgets/save_button.dart';
@@ -36,15 +35,24 @@ class _AddUserScreenState extends State<AddUserScreen> {
               SizedBox(
                 height: size.height * 0.08,
               ),
-              InputField(controller: nameController, hint: 'name'),
+              InputField(
+                  controller: nameController,
+                  hint: 'name',
+                  keyBoard: TextInputType.name),
               SizedBox(
                 height: size.height * 0.03,
               ),
-              InputField(controller: nameController, hint: 'email'),
+              InputField(
+                  controller: emailController,
+                  hint: 'email',
+                  keyBoard: TextInputType.emailAddress),
               SizedBox(
                 height: size.height * 0.03,
               ),
-              InputField(controller: nameController, hint: 'age'),
+              InputField(
+                  controller: ageController,
+                  hint: 'age',
+                  keyBoard: TextInputType.number),
               SizedBox(
                 height: size.height * 0.08,
               ),
