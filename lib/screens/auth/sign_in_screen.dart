@@ -1,12 +1,17 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:users/screens/auth/sign_up_screen.dart';
 
+import '../../providers/auth_provider.dart';
 import '../../utils/fonts.dart';
+import '../../utils/methods.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/my_button.dart';
 import '../../widgets/show_input_error.dart';
-import '../users_screen.dart';
+import '../add_user_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -33,6 +38,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -67,7 +73,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     keyBoard: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
                   ),
-                  // ShowInputError(error: nameValidationText),
+                  ShowInputError(error: emailValidationText),
                   SizedBox(
                     height: size.height * 0.01,
                   ),
@@ -78,7 +84,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     textInputAction: TextInputAction.done,
                     obscure: true,
                   ),
-                  //  ShowInputError(error: emailValidationText),
+                  ShowInputError(error: passwordValidationText),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -90,12 +96,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: size.height * 0.06,
+                    height: size.height * 0.03,
                   ),
 
                   ///--------------------ON SUBMIT BUTTON------------------------
                   MyButton(
-                    onTap: () {},
+                    onTap: () => _trySubmit(authProvider),
                     child: isLoading
                         ? const Loader()
                         : Text(
@@ -143,15 +149,9 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {
         emailValidationText = 'Enter a email';
       });
-    } else if (val.length < 3) {
+    } else if (val.length < 4) {
       setState(() {
         emailValidationText = 'enter a valid email';
-      });
-    } else if (!RegExp(
-            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-        .hasMatch(val)) {
-      setState(() {
-        emailValidationText = 'Enter valid email address';
       });
     } else {
       setState(() {
@@ -167,11 +167,6 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {
         passwordValidationText = 'Please enter password';
       });
-    } else if (!regex.hasMatch(val)) {
-      setState(() {
-        passwordValidationText =
-            'Password must be:\nAt least 1 number,1 uppercase latter,1 lowercase latter';
-      });
     } else if (val.length < 5) {
       setState(() {
         passwordValidationText = 'Password must be 5 character';
@@ -180,6 +175,40 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {
         passwordValidationText = '';
       });
+    }
+  }
+
+  _trySubmit(AuthProvider authProvider) async {
+    emailValidation(emailController.text.trim());
+    passwordValidation(passwordController.text.trim());
+
+    if (emailValidationText.trim().isEmpty &&
+        passwordValidationText.trim().isEmpty) {
+      //FORM IS VALID PROCCED TO SIGNUP
+
+      setState(() {
+        isLoading = true;
+      });
+      log('FORM VALID');
+      await authProvider
+          .signInWithEmailAndPassword(
+              emailController.text.trim(), passwordController.text.trim())
+          .then((result) {
+        setState(() {
+          isLoading = false;
+        });
+
+        log('RESULT:$result');
+        showToast(result);
+        if (result == 'Sucessfull') {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const AddUserScreen(),
+          ));
+        }
+      });
+    } else {
+      log('FORM NOT VALID');
+      return;
     }
   }
 }

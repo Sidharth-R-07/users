@@ -64,7 +64,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
                   ///---------------------TITLE -----------------------------------------
                   Text(
-                    'Hello!\nWelcome back',
+                    'Enter Your\nDetails!',
                     style: FontsProvider.titleLarge,
                   ),
                   SizedBox(

@@ -16,10 +16,10 @@ class AuthProvider with ChangeNotifier {
         password: password,
       );
       result = 'Sucessfull';
-    } on PlatformException catch (err) {
+    } on FirebaseAuthException catch (err) {
       result = err.message.toString();
     } catch (err) {
-      result = 'Some error occured!';
+      result = err.toString();
       log('ERROR FROM SIGNUP :$err');
     }
     return result;
@@ -31,10 +31,9 @@ class AuthProvider with ChangeNotifier {
 
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on PlatformException catch (err) {
+          email: email, password: password);
+             result = 'Sucessfull';
+    } on FirebaseAuthException catch (err) {
       result = err.message.toString();
     } catch (err) {
       log('ERROR FROM SIGNIn :$err');

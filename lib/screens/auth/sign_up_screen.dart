@@ -1,6 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:users/providers/auth_provider.dart';
+import 'package:users/screens/add_user_screen.dart';
 import 'package:users/screens/auth/sign_in_screen.dart';
 import 'package:users/utils/methods.dart';
 
@@ -38,6 +41,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: GestureDetector(
@@ -100,7 +106,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   ///--------------------ON SUBMIT BUTTON------------------------
                   MyButton(
-                    onTap: _trySubmit,
+                    onTap: () => _trySubmit(authProvider),
                     child: isLoading
                         ? const Loader()
                         : Text(
@@ -175,7 +181,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     } else if (!regex.hasMatch(val)) {
       setState(() {
         passwordValidationText =
-            'Password must be:\nAt least 1 number,1 uppercase latter,1 lowercase latter';
+            'Password must be:\nAt least 2 number,1 uppercase latter and lowercase latter';
       });
     } else if (val.length < 5) {
       setState(() {
@@ -203,21 +209,38 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  _trySubmit() {
+  _trySubmit(AuthProvider authProvider) async {
     emailValidation(emailController.text.trim());
     passwordValidation(passwordController.text.trim());
     conformPasswordValidation();
-    if (emailValidationText == null ||
-        passwordValidationText == null ||
-        conformPassValidationText == null) {
-      //FORM IS VALID PROCCED TO SIGN UP
+    if (emailValidationText.trim().isEmpty &&
+        passwordValidationText.trim().isEmpty &&
+        conformPassValidationText.trim().isEmpty) {
+      //FORM IS VALID PROCCED TO SIGNUP
 
-      log('FORM IS VALID!');
+      setState(() {
+        isLoading = true;
+      });
+      log('FORM VALID');
+      await authProvider
+          .signupWithEmailAndPassword(
+              emailController.text.trim(), passwordController.text.trim())
+          .then((result) {
+        setState(() {
+          isLoading = false;
+        });
+
+        log('RESULT:$result');
+        showToast(result);
+        if (result == 'Sucessfull') {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const AddUserScreen(),
+          ));
+        }
+      });
     } else {
-      //FORM IS NOT VALID
-      log('FORM IS NOT VALID!');
-
-      // showToast('Something went wrong');
+      log('FORM NOT VALID');
+      return;
     }
   }
 }
