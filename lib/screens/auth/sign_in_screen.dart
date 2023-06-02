@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:users/screens/auth/sign_up_screen.dart';
 import 'package:users/utils/colors.dart';
+import 'package:users/widgets/auth_icon.dart';
+import 'package:users/widgets/loading_circle.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../utils/fonts.dart';
@@ -29,6 +31,7 @@ class _SignInScreenState extends State<SignInScreen> {
   String emailValidationText = '';
   String passwordValidationText = '';
   bool isLoading = false;
+  bool gLoading = false;
 
   @override
   void dispose() {
@@ -135,6 +138,38 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ],
                   ),
+
+                  const Divider(
+                    color: Colors.grey,
+                    thickness: .2,
+                  ),
+                  SizedBox(
+                    height: size.height * 0.01,
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      AuthIcon(
+                        onTap: () => _signInwithGoogle(authProvider),
+                        child: gLoading
+                            ? const LoadingCircle()
+                            : Image.asset(
+                                'assets/images/google.png',
+                                height: 38,
+                              ),
+                      ),
+                      AuthIcon(
+                        onTap: () {},
+                        child: Image.asset(
+                          'assets/images/cell-phone.png',
+                          height: 38,
+                          color: primaryColor,
+                        ),
+                      ),
+                    ],
+                  ),
+
                   SizedBox(
                     height: size.height * 0.10,
                   ),
@@ -290,6 +325,31 @@ class _SignInScreenState extends State<SignInScreen> {
         log('SOME ERROR OCCURED !WHILE SEND REST MAIL');
         showToast(result);
       }
+    });
+  }
+
+  _signInwithGoogle(AuthProvider authProvider) async {
+    setState(() {
+      gLoading = true;
+    });
+    await authProvider.signInWithGoogle().then((result) {
+      if (result == 'Sucessfull') {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const AddUserScreen(),
+            ));
+        setState(() {
+          gLoading = false;
+        });
+
+        showToast('Sign In Successfull');
+      } else {
+        showToast(result);
+      }
+    });
+    setState(() {
+      gLoading = false;
     });
   }
 }
