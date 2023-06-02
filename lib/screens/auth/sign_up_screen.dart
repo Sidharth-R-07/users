@@ -1,10 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:users/screens/auth/sign_in_screen.dart';
+import 'package:users/utils/methods.dart';
 
 import '../../utils/fonts.dart';
 import '../../widgets/input_field.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/my_button.dart';
+import '../../widgets/show_input_error.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -18,6 +22,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final passwordController = TextEditingController();
   final confromPasswordController = TextEditingController();
   bool isLoading = false;
+
+  String emailValidationText = '';
+  String passwordValidationText = '';
+  String conformPassValidationText = '';
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confromPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -55,7 +72,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     keyBoard: TextInputType.name,
                     textInputAction: TextInputAction.next,
                   ),
-                  // ShowInputError(error: nameValidationText),
+                  ShowInputError(error: emailValidationText),
                   SizedBox(
                     height: size.height * 0.01,
                   ),
@@ -65,7 +82,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     keyBoard: TextInputType.visiblePassword,
                     textInputAction: TextInputAction.next,
                   ),
-                  //  ShowInputError(error: emailValidationText),
+                  ShowInputError(error: passwordValidationText),
                   SizedBox(
                     height: size.height * 0.01,
                   ),
@@ -76,18 +93,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     textInputAction: TextInputAction.done,
                     obscure: true,
                   ),
-                  //  ShowInputError(error: emailValidationText),
+                  ShowInputError(error: conformPassValidationText),
                   SizedBox(
                     height: size.height * 0.06,
                   ),
 
                   ///--------------------ON SUBMIT BUTTON------------------------
                   MyButton(
-                    onTap: () {},
+                    onTap: _trySubmit,
                     child: isLoading
                         ? const Loader()
                         : Text(
-                            'Sign In',
+                            'Sign Up',
                             style: FontsProvider.whiteMediumText,
                           ),
                   ),
@@ -124,5 +141,83 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  void emailValidation(String val) {
+    if (val.isEmpty) {
+      setState(() {
+        emailValidationText = 'Enter a email';
+      });
+    } else if (val.length < 3) {
+      setState(() {
+        emailValidationText = 'enter a valid email';
+      });
+    } else if (!RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(val)) {
+      setState(() {
+        emailValidationText = 'Enter valid email address';
+      });
+    } else {
+      setState(() {
+        emailValidationText = '';
+      });
+    }
+  }
+
+  void passwordValidation(String val) {
+    RegExp regex =
+        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+    if (val.isEmpty) {
+      setState(() {
+        passwordValidationText = 'Please enter password';
+      });
+    } else if (!regex.hasMatch(val)) {
+      setState(() {
+        passwordValidationText =
+            'Password must be:\nAt least 1 number,1 uppercase latter,1 lowercase latter';
+      });
+    } else if (val.length < 5) {
+      setState(() {
+        passwordValidationText = 'Password must be 5 character';
+      });
+    } else {
+      setState(() {
+        passwordValidationText = '';
+      });
+    }
+  }
+
+  void conformPasswordValidation() {
+    final password = passwordController.text.trim();
+    final conformPassword = confromPasswordController.text.trim();
+
+    if (password != conformPassword) {
+      setState(() {
+        conformPassValidationText = "Password does't match";
+      });
+    } else {
+      setState(() {
+        conformPassValidationText = '';
+      });
+    }
+  }
+
+  _trySubmit() {
+    emailValidation(emailController.text.trim());
+    passwordValidation(passwordController.text.trim());
+    conformPasswordValidation();
+    if (emailValidationText == null ||
+        passwordValidationText == null ||
+        conformPassValidationText == null) {
+      //FORM IS VALID PROCCED TO SIGN UP
+
+      log('FORM IS VALID!');
+    } else {
+      //FORM IS NOT VALID
+      log('FORM IS NOT VALID!');
+
+      // showToast('Something went wrong');
+    }
   }
 }

@@ -18,7 +18,18 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  String emailValidationText = '';
+  String passwordValidationText = '';
   bool isLoading = false;
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -125,5 +136,50 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+
+  void emailValidation(String val) {
+    if (val.isEmpty) {
+      setState(() {
+        emailValidationText = 'Enter a email';
+      });
+    } else if (val.length < 3) {
+      setState(() {
+        emailValidationText = 'enter a valid email';
+      });
+    } else if (!RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(val)) {
+      setState(() {
+        emailValidationText = 'Enter valid email address';
+      });
+    } else {
+      setState(() {
+        emailValidationText = '';
+      });
+    }
+  }
+
+  void passwordValidation(String val) {
+    RegExp regex =
+        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
+    if (val.isEmpty) {
+      setState(() {
+        passwordValidationText = 'Please enter password';
+      });
+    } else if (!regex.hasMatch(val)) {
+      setState(() {
+        passwordValidationText =
+            'Password must be:\nAt least 1 number,1 uppercase latter,1 lowercase latter';
+      });
+    } else if (val.length < 5) {
+      setState(() {
+        passwordValidationText = 'Password must be 5 character';
+      });
+    } else {
+      setState(() {
+        passwordValidationText = '';
+      });
+    }
   }
 }
