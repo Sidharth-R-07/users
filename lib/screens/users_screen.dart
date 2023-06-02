@@ -19,7 +19,7 @@ class UsersScreen extends StatefulWidget {
 
 class _UsersScreenState extends State<UsersScreen> {
   ///SET FECTHING USERS COUNT
-  int limit = 15;
+  int limit = 5;
 
   ///INTIAL LOADING FOR FETCH USERS FIRST TIME
   bool loadingUsers = false;
@@ -50,7 +50,7 @@ class _UsersScreenState extends State<UsersScreen> {
       final snapshot = await firestore
           .collection('users')
           .orderBy('createAt', descending: true)
-          .limit(limit)
+          .limit(limit + 10)
           .get();
       final fetchedList = snapshot.docs
           .map<UserModel>((data) => UserModel(
@@ -166,7 +166,7 @@ class _UsersScreenState extends State<UsersScreen> {
     return Scaffold(
         appBar: AppBar(
           title: Text(
-            'all users',
+            'Users',
             style: FontsProvider.headingMedium,
           ),
         ),

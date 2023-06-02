@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:users/screens/auth_screens/phone_athentication.dart';
 
-import '../screens/auth/sign_in_screen.dart';
+import 'screens/auth_screens/sign_in_screen.dart';
 import '../providers/auth_provider.dart';
 import '../utils/colors.dart';
 import '../providers/user_provider.dart';
@@ -34,13 +35,15 @@ class MyApp extends StatelessWidget {
         title: 'Users',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
-            scaffoldBackgroundColor: bgScaffold,
-            primaryColor: primaryColor,
-            useMaterial3: true,
-            appBarTheme: const AppBarTheme(
-                iconTheme: IconThemeData(color: primaryColor))),
-        home: const SignInScreen(),
+          colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
+          scaffoldBackgroundColor: bgScaffold,
+          primaryColor: primaryColor,
+          useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: primaryColor),
+          ),
+        ),
+        home: const PhoneAuthenticationScreen(),
       ),
     );
   }

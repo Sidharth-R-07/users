@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:users/screens/auth/sign_up_screen.dart';
+import 'package:users/screens/auth_screens/sign_up_screen.dart';
 import 'package:users/utils/colors.dart';
 import 'package:users/widgets/auth_icon.dart';
 import 'package:users/widgets/loading_circle.dart';

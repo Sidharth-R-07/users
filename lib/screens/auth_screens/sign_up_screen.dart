@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:users/providers/auth_provider.dart';
 import 'package:users/screens/add_user_screen.dart';
-import 'package:users/screens/auth/sign_in_screen.dart';
+import 'package:users/screens/auth_screens/sign_in_screen.dart';
 import 'package:users/utils/methods.dart';
 
 import '../../utils/fonts.dart';
