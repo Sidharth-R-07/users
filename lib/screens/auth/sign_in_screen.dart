@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:users/screens/auth/sign_up_screen.dart';
+import 'package:users/utils/colors.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../utils/fonts.dart';
@@ -23,6 +24,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final resetEmailController = TextEditingController();
 
   String emailValidationText = '';
   String passwordValidationText = '';
@@ -32,6 +34,7 @@ class _SignInScreenState extends State<SignInScreen> {
   void dispose() {
     emailController.dispose();
     passwordController.dispose();
+    resetEmailController.dispose();
     super.dispose();
   }
 
@@ -90,7 +93,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () => _showAlertDialog(authProvider),
                         child: const Text('forgot password? '),
                       ),
                     ],
@@ -161,8 +164,6 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void passwordValidation(String val) {
-    RegExp regex =
-        RegExp(r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$');
     if (val.isEmpty) {
       setState(() {
         passwordValidationText = 'Please enter password';
@@ -210,5 +211,85 @@ class _SignInScreenState extends State<SignInScreen> {
       log('FORM NOT VALID');
       return;
     }
+  }
+
+  Future<void> _showAlertDialog(AuthProvider authProvider) async {
+    bool showLoading = false;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: bgScaffold,
+          title: Text(
+            'Forgot your password?',
+            style: FontsProvider.headingMedium,
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                const Text(
+                    "Enter your email address and we'll send you a link to reset your password."),
+                const SizedBox(
+                  height: 8,
+                ),
+                InputField(
+                    controller: resetEmailController,
+                    hint: 'enter email',
+                    keyBoard: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.done)
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            MyButton(
+                child: showLoading
+                    ? const Loader()
+                    : Text(
+                        'Request to send link',
+                        style: FontsProvider.whiteMediumText
+                            .copyWith(fontSize: 18),
+                      ),
+                onTap: () async {
+                  setState(() {
+                    showLoading = true;
+                  });
+                  await _sendRestLink(
+                      authProvider: authProvider,
+                      email: resetEmailController.text.trim());
+
+                  resetEmailController.clear();
+                  setState(() {
+                    showLoading = false;
+                  });
+                }),
+            Center(
+              child: TextButton(
+                child: const Text('Back'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future _sendRestLink({
+    required AuthProvider authProvider,
+    required String email,
+  }) async {
+    await authProvider.resetPassword(email).then((result) {
+      if (result == 'Sucessfull') {
+        log('SUCCESSFULLY SENDED LINK');
+        showToast('Rest Password link Sended !');
+        Navigator.of(context).pop();
+      } else {
+        log('SOME ERROR OCCURED !WHILE SEND REST MAIL');
+        showToast(result);
+      }
+    });
   }
 }

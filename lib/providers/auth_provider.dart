@@ -32,13 +32,27 @@ class AuthProvider with ChangeNotifier {
     try {
       await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-             result = 'Sucessfull';
+      result = 'Sucessfull';
     } on FirebaseAuthException catch (err) {
       result = err.message.toString();
     } catch (err) {
       log('ERROR FROM SIGNIn :$err');
       result = 'Some error occured!';
     }
+    return result;
+  }
+
+  Future<String> resetPassword(String email) async {
+    String result = 'Something went wrong!';
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      result = 'Sucessfull';
+    } on FirebaseAuthException catch (e) {
+      result = e.message.toString();
+    } catch (err) {
+      result = err.toString();
+    }
+
     return result;
   }
 
