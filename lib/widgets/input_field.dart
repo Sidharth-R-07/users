@@ -7,14 +7,15 @@ class InputField extends StatelessWidget {
   final String hint;
   final TextInputAction textInputAction;
   final TextInputType keyBoard;
+  bool obscure;
 
-  const InputField({
-    super.key,
-    required this.controller,
-    required this.hint,
-    required this.keyBoard,
-    required this.textInputAction,
-  });
+  InputField(
+      {super.key,
+      required this.controller,
+      required this.hint,
+      required this.keyBoard,
+      required this.textInputAction,
+      this.obscure = false});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,7 @@ class InputField extends StatelessWidget {
       child: TextFormField(
         controller: controller,
         keyboardType: keyBoard,
+        obscureText: obscure,
         textInputAction: textInputAction,
         decoration: InputDecoration(
           border: InputBorder.none,

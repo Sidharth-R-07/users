@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:users/utils/colors.dart';
 
-class LazyLoading extends StatefulWidget {
-  const LazyLoading({super.key});
+class LoadingCircle extends StatefulWidget {
+  const LoadingCircle({super.key});
 
   @override
-  State<LazyLoading> createState() => _LazyLoadingState();
+  State<LoadingCircle> createState() => _LoadingCircleState();
 }
 
-class _LazyLoadingState extends State<LazyLoading>
+class _LoadingCircleState extends State<LoadingCircle>
     with SingleTickerProviderStateMixin {
   late AnimationController animateController;
 

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import '../models/user_model.dart';
 import '../utils/fonts.dart';
 import '../utils/methods.dart';
-import '../widgets/lazy_loading.dart';
+import '../widgets/loading_circle.dart';
 
 import '../widgets/user_card.dart';
 
@@ -173,7 +173,7 @@ class _UsersScreenState extends State<UsersScreen> {
 
         ///CHECKING IS FETCHING USERS OR NOT
         body: loadingUsers
-            ? const LazyLoading()
+            ? const LoadingCircle()
 
             ///CHECKING LIST IS EMPTY OR NOT
             : usersList.isEmpty
@@ -196,7 +196,7 @@ class _UsersScreenState extends State<UsersScreen> {
                       ),
 
                       ///LOADING FOR FETCH MORE USERS
-                      if (loadMore) const LazyLoading()
+                      if (loadMore) const LoadingCircle()
                     ],
                   ));
   }

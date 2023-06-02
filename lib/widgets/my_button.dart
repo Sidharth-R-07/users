@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../utils/colors.dart';
 
-class SaveButton extends StatelessWidget {
+class MyButton extends StatelessWidget {
   final Widget child;
   final Function() onTap;
-  const SaveButton({super.key, required this.child, required this.onTap});
+  const MyButton({super.key, required this.child, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

@@ -3,8 +3,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import '../screens/auth/sign_in_screen.dart';
 import '../providers/auth_provider.dart';
-import '../screens/add_user_screen.dart';
 import '../utils/colors.dart';
 import '../providers/user_provider.dart';
 
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             appBarTheme: const AppBarTheme(
                 iconTheme: IconThemeData(color: primaryColor))),
-        home: const AddUserScreen(),
+        home: const SignInScreen(),
       ),
     );
   }

@@ -10,7 +10,7 @@ import '../utils/fonts.dart';
 import '../utils/methods.dart';
 import '../widgets/input_field.dart';
 import '../widgets/loader.dart';
-import '../widgets/save_button.dart';
+import '../widgets/my_button.dart';
 import '../widgets/show_input_error.dart';
 
 class AddUserScreen extends StatefulWidget {
@@ -104,7 +104,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   ),
 
                   ///--------------------ON SUBMIT BUTTON------------------------
-                  SaveButton(
+                  MyButton(
                     onTap: () => _submitFn(userProvider),
                     child: isLoading
                         ? const Loader()
