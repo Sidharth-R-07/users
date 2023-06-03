@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:users/screens/add_user_screen.dart';
 import 'package:users/utils/colors.dart';
+import 'package:users/utils/methods.dart';
 import 'package:users/widgets/phone_input_field.dart';
+import 'package:users/widgets/show_input_error.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../utils/fonts.dart';
@@ -25,10 +31,20 @@ class _PhoneAuthenticationScreenState extends State<PhoneAuthenticationScreen> {
   bool isLoading = false;
   bool codeSended = false;
 
+  String phoneValidationText = '';
+  String otpValidationText = '';
+
+  int countDownSec = 60;
+
+  late Timer timer;
+
   @override
   void dispose() {
     phoneController.dispose();
+    otpController.dispose();
+    timer.cancel();
     otpFocusNode.dispose();
+
     super.dispose();
   }
 
@@ -89,9 +105,9 @@ class _PhoneAuthenticationScreenState extends State<PhoneAuthenticationScreen> {
                   hint: 'Phone number',
                   inputLength: 10,
                 ),
-
+                ShowInputError(error: phoneValidationText),
                 SizedBox(
-                  height: size.height * 0.05,
+                  height: size.height * 0.03,
                 ),
                 if (codeSended)
                   PhoneInputField(
@@ -101,20 +117,15 @@ class _PhoneAuthenticationScreenState extends State<PhoneAuthenticationScreen> {
                     isOtp: true,
                     focusNode: otpFocusNode,
                   ),
+                if (codeSended) ShowInputError(error: otpValidationText),
 
                 SizedBox(
-                  height: size.height * 0.05,
+                  height: size.height * 0.03,
                 ),
 
                 ///--------------------ON SUBMIT BUTTON------------------------
                 MyButton(
-                  onTap: () {
-                    if (!codeSended) {
-                      _sendOTP();
-                    } else {
-                      _verifyOTP();
-                    }
-                  },
+                  onTap: () => _submitFn(authProvider),
                   child: isLoading
                       ? const Loader()
                       : Text(
@@ -122,9 +133,51 @@ class _PhoneAuthenticationScreenState extends State<PhoneAuthenticationScreen> {
                           style: FontsProvider.whiteMediumText,
                         ),
                 ),
-
                 SizedBox(
                   height: size.height * 0.02,
+                ),
+
+                if (codeSended)
+                  Center(
+                    child: Text(
+                      "Haven't recieved the verification code?",
+                      style: FontsProvider.hintText,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                SizedBox(
+                  height: size.height * 0.001,
+                ),
+
+                if (codeSended)
+                  Visibility(
+                    visible: countDownSec != 0,
+                    child: Center(
+                      child: Text(
+                        "00:$countDownSec",
+                        style:
+                            FontsProvider.headingMedium.copyWith(fontSize: 16),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                if (codeSended)
+                  Visibility(
+                    visible: countDownSec == 0,
+                    child: Center(
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Resend',
+                          style: FontsProvider.headingMedium
+                              .copyWith(fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                SizedBox(
+                  height: size.height * 0.03,
                 ),
               ],
             ),
@@ -134,17 +187,125 @@ class _PhoneAuthenticationScreenState extends State<PhoneAuthenticationScreen> {
     );
   }
 
-  _sendOTP() {
-    FocusScope.of(context).requestFocus(otpFocusNode);
+  _sendOTP(AuthProvider authProvider) async {
+    phoneValidation(phoneController.text.trim());
 
+    if (phoneValidationText.isNotEmpty) {
+      return;
+    }
     setState(() {
-      codeSended = true;
+      isLoading = true;
+    });
+    await authProvider
+        .signInWithPhone(phoneNumber: '+91${phoneController.text.trim()}')
+        .then((_) {
+      setState(() {
+        isLoading = false;
+        codeSended = true;
+      });
+
+      startTimer();
+      FocusScope.of(context).requestFocus(otpFocusNode);
     });
   }
 
-  _verifyOTP() {
+  _verifyOTP(AuthProvider authProvider) {
+    otpValidation(otpController.text.trim());
+
+    if (otpValidationText.isNotEmpty) {
+      return;
+    }
+
     setState(() {
-      codeSended = false;
+      isLoading = true;
     });
+
+    authProvider.verifyOTP(otp: otpController.text.trim()).then((result) {
+      if (result == 'Sucessfull') {
+        timer.cancel();
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const AddUserScreen(),
+        ));
+        showToast('Sign In Successfull');
+      } else {
+        showToast(result);
+      }
+    });
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  void startTimer() {
+    const oneSec = Duration(seconds: 1);
+    timer = Timer.periodic(
+      oneSec,
+      (Timer timer) {
+        if (countDownSec == 0) {
+          setState(() {
+            timer.cancel();
+          });
+        } else {
+          if (mounted) {
+            setState(() {
+              countDownSec--;
+            });
+          }
+        }
+
+        // log('TIMER:$countDownSec');
+      },
+    );
+  }
+
+  void phoneValidation(String val) {
+    if (val.isEmpty) {
+      setState(() {
+        phoneValidationText = 'Please enter phone number';
+      });
+    } else if (int.tryParse(val) == null) {
+      setState(() {
+        phoneValidationText = 'Only Number are allowed';
+      });
+    } else if (val.length != 10) {
+      setState(() {
+        phoneValidationText = 'Please enter valid phone number';
+      });
+    } else {
+      setState(() {
+        phoneValidationText = '';
+      });
+    }
+  }
+
+  void otpValidation(String val) {
+    if (val.isEmpty) {
+      setState(() {
+        otpValidationText = 'Please enter OTP';
+      });
+    } else if (int.tryParse(val) == null) {
+      setState(() {
+        phoneValidationText = 'Only Number are allowed';
+      });
+    } else if (val.length != 6) {
+      setState(() {
+        otpValidationText = 'Please enter valid OTP';
+      });
+    } else {
+      setState(() {
+        otpValidationText = '';
+      });
+    }
+  }
+
+  _submitFn(AuthProvider authProvider) {
+    phoneValidation(phoneController.text.trim());
+    otpValidation(otpController.text.trim());
+
+    if (!codeSended) {
+      _sendOTP(authProvider);
+    } else {
+      _verifyOTP(authProvider);
+    }
   }
 }

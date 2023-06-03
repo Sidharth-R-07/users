@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:users/screens/auth_screens/phone_athentication.dart';
 
 import 'screens/auth_screens/sign_in_screen.dart';
 import '../providers/auth_provider.dart';
@@ -43,7 +42,7 @@ class MyApp extends StatelessWidget {
             iconTheme: IconThemeData(color: primaryColor),
           ),
         ),
-        home: const PhoneAuthenticationScreen(),
+        home: const SignInScreen(),
       ),
     );
   }

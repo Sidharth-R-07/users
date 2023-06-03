@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:users/utils/methods.dart';
 
 class AuthProvider with ChangeNotifier {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  late String _verificationId;
+  late int _tokenId;
 
   Future<String> signupWithEmailAndPassword(
       String email, String password) async {
@@ -100,6 +103,61 @@ class AuthProvider with ChangeNotifier {
     } catch (err) {
       result = 'Some error occured!';
       result = err.toString();
+    }
+    return result;
+  }
+
+  //PHONE AUTHENTICATION
+
+  Future<void> signInWithPhone({required String phoneNumber}) async {
+    try {
+      await _firebaseAuth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        timeout: const Duration(seconds: 60),
+        verificationCompleted: (phoneAuthCredential) async {
+          await _firebaseAuth.signInWithCredential(phoneAuthCredential);
+          log('Phone Verification Successfull');
+        },
+        verificationFailed: (error) {
+          //SHOW ERROR
+
+          log('VERFICATION FAILD :$error');
+          showToast(error.message.toString());
+        },
+        codeSent: (verificationId, resendToken) {
+          log('SMS sent to the Phone Number Successfull');
+          _verificationId = verificationId;
+          _tokenId = resendToken!;
+        },
+        codeAutoRetrievalTimeout: (verificationId) {},
+      );
+    } on FirebaseAuthException catch (err) {
+      log('ERROR FOUND:${err.message}');
+      showToast(err.message.toString());
+    } catch (err) {
+      log('ERROR FOUND:$err');
+      showToast(err.toString());
+    }
+  }
+
+  Future<String> verifyOTP({required String otp}) async {
+    String result = 'Something went wrong!';
+    try {
+      final credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId,
+        smsCode: otp,
+      );
+
+      await _firebaseAuth.signInWithCredential(credential);
+      result = 'Sucessfull';
+
+      log('Sign in with phone number successfull');
+    } on PlatformException catch (err) {
+      log('ERROR FOUND:${err.message}');
+      result = err.message.toString();
+    } catch (err) {
+      log('ERROR FOUND:$err');
+      result = 'Error occured!';
     }
     return result;
   }

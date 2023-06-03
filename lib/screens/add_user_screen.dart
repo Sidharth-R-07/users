@@ -64,12 +64,14 @@ class _AddUserScreenState extends State<AddUserScreen> {
 
                   ///---------------------TITLE -----------------------------------------
                   Text(
-                    'Enter Your\nDetails!',
+                    'Enter User\nDetails!',
                     style: FontsProvider.titleLarge,
                   ),
                   SizedBox(
                     height: size.height * 0.08,
                   ),
+
+                  ///--------------------SELECT PHOTO------------------------------
 
                   ///--------------------TEXT INPUT FEILD SECTIONS------------------------
                   InputField(
@@ -82,16 +84,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   SizedBox(
                     height: size.height * 0.01,
                   ),
-                  InputField(
-                    controller: emailController,
-                    hint: 'email',
-                    keyBoard: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  ShowInputError(error: emailValidationText),
-                  SizedBox(
-                    height: size.height * 0.01,
-                  ),
+
                   InputField(
                     controller: ageController,
                     hint: 'age',

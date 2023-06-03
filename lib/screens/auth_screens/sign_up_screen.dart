@@ -64,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   ///---------------------TITLE -----------------------------------------
                   Text(
-                    'Sign Up',
+                    'Signup to\nget started',
                     style: FontsProvider.titleLarge,
                   ),
                   SizedBox(
@@ -101,7 +101,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   ShowInputError(error: conformPassValidationText),
                   SizedBox(
-                    height: size.height * 0.06,
+                    height: size.height * 0.04,
                   ),
 
                   ///--------------------ON SUBMIT BUTTON------------------------
@@ -133,7 +133,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             builder: (context) => const SignInScreen(),
                           ));
                         },
-                        child: const Text('Sign In'),
+                        child: Text(
+                          'Sign In',
+                          style: FontsProvider.headingMedium,
+                        ),
                       ),
                     ],
                   ),

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:users/screens/auth_screens/phone_athentication.dart';
 import 'package:users/screens/auth_screens/sign_up_screen.dart';
 import 'package:users/utils/colors.dart';
 import 'package:users/widgets/auth_icon.dart';
@@ -134,9 +135,15 @@ class _SignInScreenState extends State<SignInScreen> {
                             builder: (context) => const SignUpScreen(),
                           ));
                         },
-                        child: const Text('Sign Up'),
+                        child: Text(
+                          'Sign Up',
+                          style: FontsProvider.headingMedium,
+                        ),
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    height: size.height * 0.03,
                   ),
 
                   const Divider(
@@ -144,7 +151,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     thickness: .2,
                   ),
                   SizedBox(
-                    height: size.height * 0.01,
+                    height: size.height * 0.03,
                   ),
 
                   Row(
@@ -160,7 +167,12 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                       ),
                       AuthIcon(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                const PhoneAuthenticationScreen(),
+                          ));
+                        },
                         child: Image.asset(
                           'assets/images/cell-phone.png',
                           height: 38,
@@ -171,7 +183,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
 
                   SizedBox(
-                    height: size.height * 0.10,
+                    height: size.height * 0.03,
                   ),
                 ],
               ),
